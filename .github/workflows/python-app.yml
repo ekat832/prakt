@@ -10,12 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # или используйте нужную вам платформу, например, 'windows-latest'
-    
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.14.0-alpha]  # Указываем ваши версии Python, включая стабильные и альфа-версии
-    
+        python-version: [3.14.0a7]  # Используйте вашу версию Python 3.14.0a7
+
     steps:
     - name: Check out the code
       uses: actions/checkout@v2
@@ -23,13 +22,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}  # Автоматически подставляется версия из матрицы
+        python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Устанавливаем зависимости из файла requirements.txt
+        pip install -r requirements.txt
 
     - name: Run tests
       run: |
-        pytest  # Запуск тестов с использованием pytest
+        pytest
