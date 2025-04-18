@@ -13,33 +13,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]  # Используем стабильную версию Python
+        python-version: [3.9]  # Можно использовать любую стабильную версию Python
 
     steps:
     - name: Check out the code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2  # Клонируем репозиторий
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v2  # Устанавливаем Python
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements.txt  # Устанавливаем зависимости
 
     - name: Run tests
       run: |
-        pytest
+        pytest  # Запускаем тесты
 
     - name: Commit and push changes
-      if: success()  # Это условие гарантирует, что шаг выполнится, только если предыдущие шаги были успешными
+      if: success()  # Проверка, что тесты прошли успешно
       run: |
-        git config --global user.email "youremail@example.com"
-        git config --global user.name "Your Name"
-        git add .
-        git commit -m "Automatic commit after successful tests"
-        git push origin main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        git config --global user.email "youremail@example.com"  # Установите ваш email
+        git config --global user.name "Your Name"  # Установите ваше имя
+        git add .  # Добавляем все изменения
+        git commit -m "Automated commit after successful tests"  # Создаем коммит
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main  # Автоматический push с использованием токена
