@@ -1,4 +1,4 @@
-name: Python CI/CD
+name: Python CI
 
 on:
   push:
@@ -9,48 +9,37 @@ on:
       - main
 
 jobs:
-  test_and_deploy:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]  # Замените на вашу версию Python, если нужно
+        python-version: [3.9]  # Используем стабильную версию Python
 
     steps:
-      # Шаг 1: Клонирование репозитория
-      - name: Check out the code
-        uses: actions/checkout@v2
+    - name: Check out the code
+      uses: actions/checkout@v2
 
-      # Шаг 2: Установка Python
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      # Шаг 3: Установка зависимостей
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      # Шаг 4: Запуск тестов
-      - name: Run tests
-        run: |
-          pytest
+    - name: Run tests
+      run: |
+        pytest
 
-      # Шаг 5: Деплой на GitHub, если тесты прошли успешно
-      - name: Deploy changes
-        if: success()  # Эта строка проверяет, что предыдущие шаги прошли успешно
-        run: |
-          # Убедитесь, что ваш репозиторий настроен для пуша
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          
-          # Настройка удаленного репозитория с токеном для аутентификации
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          
-          # Добавление и коммит изменений
-          git add .
-          git commit -m "Deploying changes after successful tests"
-          
-          # Пуш изменений в ветку main (или в другую ветку, если требуется)
-          git push origin main
+    - name: Commit and push changes
+      if: success()  # Это условие гарантирует, что шаг выполнится, только если предыдущие шаги были успешными
+      run: |
+        git config --global user.email "youremail@example.com"
+        git config --global user.name "Your Name"
+        git add .
+        git commit -m "Automatic commit after successful tests"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
