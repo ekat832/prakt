@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9, 3.10, 3.11]  # Используйте эти версии
+        python-version: [3.8, 3.9, 3.10, 3.11]  # Используем поддерживаемые версии
 
     steps:
     - name: Check out the code
