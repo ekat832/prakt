@@ -1,12 +1,7 @@
 name: Python CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:  # Позволяет запуск вручную с выбором параметров.
 
 jobs:
   test:
@@ -33,11 +28,11 @@ jobs:
       run: |
         pytest
 
-    # - name: Push changes automatically
-    #   if: success()
-    #   run: |
-    #     git config user.name "GitHub Actions"
-    #     git config user.email "actions@github.com"
-    #     git add .
-    #     git commit -m "Automated changes after successful tests"
-    #     git push origin main
+    - name: Push changes automatically
+      if: ${{ inputs.push_changes == 'true' }} # Выполняется только если параметр равен "true"
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Automated changes after successful tests"
+        git push origin main
